@@ -31,7 +31,7 @@ script:
       done
     - echo "GhostTest available..."
     - official-images/test/run.sh "$image"
-    - curl http://localhost:2368 | grep "RabbitMQ logo"
+    - curl http://localhost:15672 | grep "RabbitMQ logo"
 
 after_script:
     - docker inspect "$image"    
