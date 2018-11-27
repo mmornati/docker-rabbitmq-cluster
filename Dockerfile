@@ -1,5 +1,6 @@
-FROM rabbitmq:3.6.1-management
+FROM rabbitmq:3.7-management-alpine
 
+RUN apk add --no-cache 'su-exec>=0.2'
 COPY rabbitmq-cluster /usr/local/bin/
 COPY pre-entrypoint.sh /
 

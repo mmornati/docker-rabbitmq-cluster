@@ -1,0 +1,46 @@
+services:
+    - docker
+
+env:
+  - DOCKER_COMPOSE_VERSION=1.4.2
+
+before_install:
+    - docker --version
+
+addons:
+  apt:
+    packages:
+      - docker-ce
+
+install:
+    - git clone https://github.com/docker-library/official-images.git official-images
+
+# Assist with ci test debugging:
+#   - DEBUG=1
+before_script:
+    - image="mmornati/rabbitmq-cluster"
+    - if [ -n "$TRAVIS_TAG" ]; then
+      image="$image:$TRAVIS_TAG";
+      fi
+script:
+    - docker build -t "$image" .
+    - docker-compose up -d
+    - until $(curl --output /dev/null --silent --head --fail http://localhost:15672); do
+          echo "waiting for rabbitmq cluster...";
+          sleep 10;
+      done
+    - echo "GhostTest available..."
+    - official-images/test/run.sh "$image"
+    - curl http://localhost:2368 | grep "RabbitMQ logo"
+
+after_script:
+    - docker inspect "$image"    
+    - docker images
+    - docker-compose logs
+    - docker-compose down
+
+after_success:
+  - if [ "$TRAVIS_BRANCH" = "master" -a "$TRAVIS_PULL_REQUEST" = "false" -o -n "$TRAVIS_TAG" ]; then 
+    echo "$DOCKER_PASSWORD" | docker login -u="$DOCKER_USERNAME" --password-stdin;
+    docker push "$image";
+    fi
