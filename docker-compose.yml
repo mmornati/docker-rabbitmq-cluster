@@ -20,15 +20,3 @@ services:
     ports:
       - "5673:5672"
       - "15673:15672"
-  rabbit3:
-    image: mmornati/rabbitmq-cluster
-    hostname: rabbit3
-    links:
-      - rabbit1
-      - rabbit2
-    environment:
-      - ERLANG_COOKIE=abcdefg
-      - CLUSTER_WITH=rabbit1
-    ports:
-      - "5674:5672"
-      - "15674:15672"

@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
 
+#Fixed Login Problem on Localhost
+echo "[{rabbit, [{loopback_users, []}]}]." > /etc/rabbitmq/rabbitmq.config
+
 mkdir -p /var/lib/rabbitmq
 
 if [ "$ERLANG_COOKIE" ]; then
