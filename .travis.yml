@@ -29,9 +29,8 @@ script:
           echo "waiting for rabbitmq cluster...";
           sleep 10;
       done
-    - echo "GhostTest available..."
+    - echo "RabbitMQ Test available..."
     - official-images/test/run.sh "$image"
-    - curl http://localhost:15672 | grep "RabbitMQ logo"
 
 after_script:
     - docker inspect "$image"    
